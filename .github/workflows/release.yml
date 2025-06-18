@@ -1,4 +1,4 @@
-name: Release on Version Commit
+name: Release Build
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   release:
+    name: Release (Build & Publish)
     if: startsWith(github.event.head_commit.message, 'v')
     runs-on: ${{ matrix.os }}
     strategy:
@@ -14,21 +15,24 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
-      - name: Check out code
+      - name: 📦 Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+      - name: 🌐 Set Electron Mirror
+        run: npm config set ELECTRON_MIRROR https://github.com/electron/electron/releases/download/
 
-      - name: Build and Publish Release
-        if: startsWith(github.event.head_commit.message, 'v')
+      - name: 📥 Install dependencies
+        run: npm install --no-optional
+
+      - name: 🔧 Rebuild native Electron modules (if needed)
+        run: npx electron-builder install-app-deps
+
+      - name: 🚀 Build & Publish Release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          npm run build
-          npx electron-builder --publish always
+        run: npx electron-builder --publish always
