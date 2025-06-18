@@ -11,6 +11,7 @@ jobs:
     outputs:
       is_release: ${{ steps.check.outputs.is_release }}
       version: ${{ steps.check.outputs.version }}
+      description: ${{ steps.check.outputs.description }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -18,14 +19,24 @@ jobs:
       - name: Check commit message
         id: check
         run: |
-          commit_msg=$(git log -1 --pretty=%B)
-          if [[ $commit_msg =~ ^release[[:space:]]v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          # Get commit summary (first line)
+          commit_summary=$(git log -1 --pretty=%s)
+          # Get commit description (rest of the message)
+          commit_description=$(git log -1 --pretty=%b)
+          
+          if [[ $commit_summary =~ ^release[[:space:]]v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
             echo "is_release=true" >> $GITHUB_OUTPUT
-            version=$(echo $commit_msg | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+")
+            version=$(echo $commit_summary | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+")
             echo "version=$version" >> $GITHUB_OUTPUT
+            # Escape newlines and other special characters in description
+            description="${commit_description//'%'/'%25'}"
+            description="${description//$'\n'/'%0A'}"
+            description="${description//$'\r'/'%0D'}"
+            echo "description=$description" >> $GITHUB_OUTPUT
           else
             echo "is_release=false" >> $GITHUB_OUTPUT
             echo "version=" >> $GITHUB_OUTPUT
+            echo "description=" >> $GITHUB_OUTPUT
           fi
 
   build:
@@ -97,6 +108,8 @@ jobs:
         with:
           tag_name: ${{ needs.check-commit.outputs.version }}
           name: Release ${{ needs.check-commit.outputs.version }}
+          body: |
+            ${{ needs.check-commit.outputs.description }}
           files: |
             artifacts/*.exe
             artifacts/*.dmg
@@ -104,4 +117,4 @@ jobs:
             artifacts/*.deb
           draft: false
           prerelease: false
-          generate_release_notes: true
+          generate_release_notes: false
