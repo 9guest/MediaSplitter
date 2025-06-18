@@ -58,32 +58,38 @@ function setupEventListeners() {
     
     // Progress listener
     window.electronAPI.onSplitProgress((data) => {
+        console.log('Progress update received:', data);
         updateProgress(data);
     });
 }
 
 async function selectFile() {
-    try {
-        const filePath = await window.electronAPI.selectFile();
-        if (filePath) {
-            selectedFile = filePath;
-            showToast('Loading file information...', 'info');
-            
-            try {
-                fileInfo = await window.electronAPI.getFileInfo(filePath);
-                displayFileInfo();
-                updateUI();
-                showToast('File loaded successfully!', 'success');
-            } catch (error) {
-                console.error('Error getting file info:', error);
-                showToast('Error loading file information', 'error');
-                clearFile();
-            }
-        }
-    } catch (error) {
-        console.error('Error selecting file:', error);
-        showToast('Error selecting file', 'error');
+  try {
+    console.log('Attempting to select file...');
+    const filePath = await window.electronAPI.selectFile();
+    console.log('Selected file path:', filePath);
+    
+    if (filePath) {
+      selectedFile = filePath;
+      showToast('Loading file information...', 'info');
+      
+      try {
+        console.log('Getting file info for:', filePath);
+        fileInfo = await window.electronAPI.getFileInfo(filePath);
+        console.log('File info received:', fileInfo);
+        displayFileInfo();
+        updateUI();
+        showToast('File loaded successfully!', 'success');
+      } catch (error) {
+        console.error('Error getting file info:', error);
+        showToast(`Error loading file: ${error.message}`, 'error');
+        clearFile();
+      }
     }
+  } catch (error) {
+    console.error('Error selecting file:', error);
+    showToast(`Error selecting file: ${error.message}`, 'error');
+  }
 }
 
 function clearFile() {

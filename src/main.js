@@ -6,8 +6,11 @@ const ffmpegStatic = require('ffmpeg-static');
 const ffprobeStatic = require('ffprobe-static');
 
 // Set FFmpeg and FFprobe paths
-ffmpeg.setFfmpegPath(ffmpegStatic);
-ffmpeg.setFfprobePath(ffprobeStatic.path);
+const ffmpegPath = ffmpegStatic.replace('app.asar', 'app.asar.unpacked');
+const ffprobePath = ffprobeStatic.path.replace('app.asar', 'app.asar.unpacked');
+
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 console.log('FFmpeg path:', ffmpegStatic);
 console.log('FFprobe path:', ffprobeStatic.path);
@@ -101,8 +104,9 @@ ipcMain.handle('select-output-folder', async () => {
 
 ipcMain.handle('get-file-info', async (event, filePath) => {
   console.log('Attempting to get file info for:', filePath);
+  const safeFilePath = filePath.replace(/\\/g, '/');
   return new Promise((resolve, reject) => {
-    ffmpeg.ffprobe(filePath, (err, metadata) => {
+    ffmpeg.ffprobe(safeFilePath, (err, metadata) => {
       if (err) {
         console.error('FFprobe error:', err);
         reject(err);
@@ -110,7 +114,7 @@ ipcMain.handle('get-file-info', async (event, filePath) => {
       }
       
       try {
-        const stats = fs.statSync(filePath);
+        const stats = fs.statSync(safeFilePath);
         const fileInfo = {
           size: stats.size,
           sizeFormatted: formatBytes(stats.size),
@@ -118,7 +122,7 @@ ipcMain.handle('get-file-info', async (event, filePath) => {
           durationFormatted: formatDuration(metadata.format.duration),
           bitrate: metadata.format.bit_rate,
           format: metadata.format.format_name,
-          filename: path.basename(filePath)
+          filename: path.basename(safeFilePath)
         };
         
         console.log('File info retrieved successfully:', fileInfo);
