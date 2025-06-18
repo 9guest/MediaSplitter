@@ -3,6 +3,14 @@
    <img src="https://github.com/user-attachments/assets/05b5d018-3d87-4143-9ba6-9198ac2b6a8e" alt="mediaSplitter" width="200" height="200" />
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/license/yourusername/media-splitter" alt="License" />
+  <img src="https://img.shields.io/github/package-json/v/yourusername/media-splitter" alt="Version" />
+  <img src="https://img.shields.io/github/issues/yourusername/media-splitter" alt="Issues" />
+  <img src="https://img.shields.io/github/actions/workflow/status/yourusername/media-splitter/build.yml?branch=main" alt="Build Status" />
+  <img src="https://img.shields.io/github/stars/yourusername/media-splitter?style=social" alt="GitHub Stars" />
+</p>
+
 # 🎬 Media Splitter
 
 A cross-platform desktop application built with Electron and FFmpeg that allows you to split media files (video/audio) into smaller parts based on file size.
