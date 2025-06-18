@@ -43,6 +43,7 @@ jobs:
       - name: Build and Release Electron App
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELECTRON_BUILDER_MAINTAINER: "9guest <9guest@github.com>"  # Added maintainer info
         run: npm run build
 
       - name: Upload Artifacts
@@ -53,5 +54,5 @@ jobs:
             dist/*.exe
             dist/*.dmg
             dist/*.AppImage
-            dist/*.snap
+            dist/*.deb
           if-no-files-found: ignore

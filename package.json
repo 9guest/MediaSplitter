@@ -47,7 +47,9 @@
     },
     "linux": {
       "target": ["AppImage", "deb"],
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "category": "AudioVideo",
+      "maintainer": "kyuguest <kyuguest@tuta.io>"
     }
   },
   "devDependencies": {
@@ -73,7 +75,10 @@
     "desktop",
     "application"
   ],
-  "author": "夜城",
+  "author": {
+    "name": "kyuguest",
+    "email": "kyuguest@tuta.io"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/9guest/MediaSplitter/issues"
