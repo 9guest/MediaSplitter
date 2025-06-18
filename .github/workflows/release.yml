@@ -1,44 +1,26 @@
-name: Release Build
+name: Build and Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  release:
-    name: Release (Build & Publish)
-    if: startsWith(github.event.head_commit.message, 'v')
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - name: 📦 Checkout repository
-        uses: actions/checkout@v3
-
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: 🌐 Set Electron mirror (env variable)
-        run: echo "ELECTRON_MIRROR=https://github.com/electron/electron/releases/download/" >> $GITHUB_ENV
-
-      - name: 🧹 Clean install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm ci || npm install --no-optional
-
-      - name: 🛠️ Fix app-builder permissions (Linux only)
-        if: runner.os == 'Linux'
-        run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder || true
-
-      - name: 🔧 Rebuild native Electron modules (if needed)
-        run: npx electron-builder install-app-deps
-
-      - name: 🚀 Build & Publish Release
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx electron-builder --publish always
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: npm ci
+    - run: npm run lint
+      continue-on-error: true
+    - run: npm test
+      continue-on-error: true
+    - run: npm run build
