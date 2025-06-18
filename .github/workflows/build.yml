@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [16.x]
+        node-version: [18.x]  # Updated from 16.x to 18.x
 
     steps:
       - name: Checkout Repository
@@ -43,7 +43,7 @@ jobs:
       - name: Build and Release Electron App
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ELECTRON_BUILDER_MAINTAINER: "9guest <9guest@github.com>"  # Added maintainer info
+          ELECTRON_BUILDER_MAINTAINER: "9guest <9guest@github.com>"
         run: npm run build
 
       - name: Upload Artifacts
