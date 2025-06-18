@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Splitter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>🎬 Media Splitter</h1>
+                <p>Split your media files into smaller parts with ease</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- File Selection Section -->
+            <section class="section">
+                <h2>📁 Select Media File</h2>
+                <div class="file-selector">
+                    <button id="selectFileBtn" class="btn btn-primary">
+                        <span class="btn-icon">📎</span>
+                        Choose File
+                    </button>
+                    <div id="selectedFile" class="file-info" style="display: none;">
+                        <div class="file-details">
+                            <div class="file-name"></div>
+                            <div class="file-meta">
+                                <span class="file-size"></span>
+                                <span class="file-duration"></span>
+                                <span class="file-format"></span>
+                            </div>
+                        </div>
+                        <button id="clearFileBtn" class="btn btn-small">✕</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Output Settings Section -->
+            <section class="section">
+                <h2>⚙️ Split Settings</h2>
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label for="sizeValue">Maximum Size per Part:</label>
+                        <div class="size-input">
+                            <input type="number" id="sizeValue" min="1" value="100" step="0.1">
+                            <select id="sizeUnit">
+                                <option value="MB">MB</option>
+                                <option value="GB">GB</option>
+                                <option value="KB">KB</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="outputFolder">Output Folder:</label>
+                        <div class="folder-input">
+                            <input type="text" id="outputFolder" placeholder="Select output folder..." readonly>
+                            <button id="selectFolderBtn" class="btn btn-secondary">Browse</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Section -->
+            <section class="section">
+                <div class="action-area">
+                    <button id="splitBtn" class="btn btn-large btn-primary" disabled>
+                        <span class="btn-icon">✂️</span>
+                        Split Media File
+                    </button>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section id="progressSection" class="section" style="display: none;">
+                <h2>📊 Progress</h2>
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="currentFile">Preparing...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="segment-info">
+                            <span id="segmentProgress">Segment 0 of 0</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="section" style="display: none;">
+                <h2>✅ Results</h2>
+                <div class="results-container">
+                    <div class="results-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">Total Parts Created:</span>
+                            <span id="totalParts" class="summary-value">0</span>
+                        </div>
+                        <div class="summary-actions">
+                            <button id="openFolderBtn" class="btn btn-secondary">
+                                <span class="btn-icon">📂</span>
+                                Open Output Folder
+                            </button>
+                        </div>
+                    </div>
+                    <div class="results-list">
+                        <div class="results-header">
+                            <span>File Name</span>
+                            <span>Size</span>
+                        </div>
+                        <div id="filesList" class="files-list"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "name": "media-splitter",
+  "version": "1.0.0",
+  "description": "A cross-platform desktop application built with Electron and FFmpeg that allows you to split media files (video/audio) into smaller parts based on file size.",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.mediasplitter.app",
+    "productName": "Media Splitter",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": ["nsis","portable"],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^22.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "ffmpeg-static": "^5.1.0",
+    "ffprobe-static": "^3.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/9guest/MediaSplitter.git"
+  },
+  "keywords": [
+    "electron",
+    "ffmpeg",
+    "media",
+    "splitter",
+    "video",
+    "audio",
+    "desktop",
+    "application"
+  ],
+  "author": "夜城",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/9guest/MediaSplitter/issues"
+  },
+  "homepage": "https://github.com/9guest/MediaSplitter#readme"
+}
