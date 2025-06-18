@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # 例如 v1.0.0 时触发发布流程
+      - 'v*.*.*'  # 例如 v1.0.0 时触发发布流程 // 仅在版本标签推送时触发
 
 jobs:
   release:
