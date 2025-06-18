@@ -1,6 +1,6 @@
 {
   "name": "media-splitter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A cross-platform desktop application built with Electron and FFmpeg that allows you to split media files (video/audio) into smaller parts based on file size.",
   "main": "src/main.js",
   "scripts": {
