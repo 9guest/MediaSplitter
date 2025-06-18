@@ -26,8 +26,14 @@ jobs:
       - name: 🌐 Set Electron mirror (env variable)
         run: echo "ELECTRON_MIRROR=https://github.com/electron/electron/releases/download/" >> $GITHUB_ENV
 
-      - name: 📥 Install dependencies
-        run: npm install --no-optional
+      - name: 🧹 Clean install dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm ci || npm install --no-optional
+
+      - name: 🛠️ Fix app-builder permissions (Linux only)
+        if: runner.os == 'Linux'
+        run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder || true
 
       - name: 🔧 Rebuild native Electron modules (if needed)
         run: npx electron-builder install-app-deps
