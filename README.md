@@ -1,3 +1,6 @@
+
+![mediaSplitter](https://github.com/user-attachments/assets/05b5d018-3d87-4143-9ba6-9198ac2b6a8e)
+
 # 🎬 Media Splitter
 
 A cross-platform desktop application built with Electron and FFmpeg that allows you to split media files (video/audio) into smaller parts based on file size.
