@@ -1,9 +1,12 @@
 
-<img src="https://github.com/user-attachments/assets/05b5d018-3d87-4143-9ba6-9198ac2b6a8e" alt="mediaSplitter" width="600" height="600" />
+<p align="center">
+   <img src="https://github.com/user-attachments/assets/05b5d018-3d87-4143-9ba6-9198ac2b6a8e" alt="mediaSplitter" width="200" height="200" />
+</p>
+
 # 🎬 Media Splitter
 
 A cross-platform desktop application built with Electron and FFmpeg that allows you to split media files (video/audio) into smaller parts based on file size.
-
+  
 ## ✨ Features
 
 - **Cross-Platform**: Works on Windows, macOS, and Linux
@@ -143,15 +146,11 @@ Customize build settings in `package.json` under the `build` section:
 
 ### Common Issues
 
-1. **"FFmpeg not found" error**
-   - Ensure all dependencies are installed: `npm install`
-   - On Linux, you might need to install additional codecs
-
-2. **Large file processing is slow**
+1. **Large file processing is slow**
    - The app uses codec copying when possible
    - Processing time depends on file size and system performance
 
-3. **Permission errors on output folder**
+2. **Permission errors on output folder**
    - Ensure the selected output folder has write permissions
    - Try selecting a different output directory
 
@@ -167,7 +166,7 @@ Customize build settings in `package.json` under the `build` section:
 
 The build process creates platform-specific installers:
 
-- **Windows**: NSIS installer (.exe)
+- **Windows**: NSIS installer & Portable (.exe)
 - **macOS**: DMG package (.dmg)
 - **Linux**: AppImage (.AppImage)
 
@@ -178,14 +177,6 @@ For distribution, consider code signing:
 1. **Windows**: Use SignTool with a code signing certificate
 2. **macOS**: Use Apple Developer certificate
 3. **Linux**: Use GPG signing for repositories
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -am 'Add new feature'`
-4. Push to branch: `git push origin feature-name`
-5. Submit a Pull Request
 
 ## 📄 License
 
