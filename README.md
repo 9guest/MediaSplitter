@@ -4,11 +4,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/yourusername/media-splitter" alt="License" />
-  <img src="https://img.shields.io/github/package-json/v/yourusername/media-splitter" alt="Version" />
-  <img src="https://img.shields.io/github/issues/yourusername/media-splitter" alt="Issues" />
-  <img src="https://img.shields.io/github/actions/workflow/status/yourusername/media-splitter/build.yml?branch=main" alt="Build Status" />
-  <img src="https://img.shields.io/github/stars/yourusername/media-splitter?style=social" alt="GitHub Stars" />
+  <img src="https://img.shields.io/github/license/9guest/media-splitter" alt="License" />
+  <img src="https://img.shields.io/github/package-json/v/9guest/media-splitter" alt="Version" />
+  <img src="https://img.shields.io/github/issues/9guest/media-splitter" alt="Issues" />
+  <img src="https://img.shields.io/github/actions/workflow/status/9guest/media-splitter/build.yml?branch=main" alt="Build Status" />
+  <img src="https://img.shields.io/github/stars/9guest/media-splitter?style=social" alt="GitHub Stars" />
 </p>
 
 # 🎬 Media Splitter
