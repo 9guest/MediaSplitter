@@ -4,17 +4,36 @@ run-name: ${{ github.actor }} is building MediaSplitter 🚀
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
 
 jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      is_release: ${{ steps.check.outputs.is_release }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - name: Check commit message
+        id: check
+        run: |
+          commit_msg=$(git log -1 --pretty=%B)
+          if [[ $commit_msg =~ ^release[[:space:]]v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "is_release=true" >> $GITHUB_OUTPUT
+            version=$(echo $commit_msg | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+")
+            echo "version=$version" >> $GITHUB_OUTPUT
+          else
+            echo "is_release=false" >> $GITHUB_OUTPUT
+            echo "version=" >> $GITHUB_OUTPUT
+          fi
+
   build:
+    needs: check-commit
+    if: needs.check-commit.outputs.is_release == 'true'
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [18.x]  # Updated from 16.x to 18.x
+        node-version: [18.x]
 
     steps:
       - name: Checkout Repository
@@ -56,3 +75,30 @@ jobs:
             dist/*.AppImage
             dist/*.deb
           if-no-files-found: ignore
+
+  create-release:
+    needs: [check-commit, build]
+    if: needs.check-commit.outputs.is_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.check-commit.outputs.version }}
+          name: Release ${{ needs.check-commit.outputs.version }}
+          files: |
+            artifacts/*.exe
+            artifacts/*.dmg
+            artifacts/*.AppImage
+            artifacts/*.deb
+          draft: false
+          prerelease: false
+          generate_release_notes: true
