@@ -12,6 +12,9 @@ jobs:
       is_release: ${{ steps.check.outputs.is_release }}
       version: ${{ steps.check.outputs.version }}
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
       - name: Check commit message
         id: check
         run: |
