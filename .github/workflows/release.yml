@@ -23,8 +23,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: 🌐 Set Electron Mirror
-        run: npm config set ELECTRON_MIRROR https://github.com/electron/electron/releases/download/
+      - name: 🌐 Set Electron mirror (env variable)
+        run: echo "ELECTRON_MIRROR=https://github.com/electron/electron/releases/download/" >> $GITHUB_ENV
 
       - name: 📥 Install dependencies
         run: npm install --no-optional
