@@ -213,3 +213,7 @@ ipcMain.handle('split-file', async (event, options) => {
 ipcMain.handle('open-folder', async (event, folderPath) => {
   shell.openPath(folderPath);
 });
+
+ipcMain.on('preset-saved', (event, preset) => {
+  console.log('Preset saved:', preset);
+});

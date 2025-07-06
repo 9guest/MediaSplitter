@@ -25,6 +25,7 @@ const openFolderBtn = document.getElementById('openFolderBtn');
 const filesList = document.getElementById('filesList');
 
 const toastContainer = document.getElementById('toastContainer');
+const dropOverlay = document.getElementById('dropOverlay');
 
 // State
 let selectedFile = null;
@@ -34,6 +35,8 @@ let isProcessing = false;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    loadPreset();
+    outputFolder = outputFolderInput.value; // <-- Add this line
     setupEventListeners();
     updateUI();
 });
@@ -53,8 +56,21 @@ function setupEventListeners() {
     openFolderBtn.addEventListener('click', openOutputFolder);
     
     // Input validation
-    sizeValueInput.addEventListener('input', updateUI);
-    outputFolderInput.addEventListener('input', updateUI);
+    sizeValueInput.addEventListener('input', () => {
+        updateUI();
+        savePreset();
+    });
+    sizeUnitSelect.addEventListener('change', () => {
+        savePreset();
+    });
+    outputFolderInput.addEventListener('input', () => {
+        outputFolder = outputFolderInput.value; // <-- Add this line
+        updateUI();
+        savePreset();
+    });
+    splitBtn.addEventListener('click', () => {
+        savePreset();
+    });
     
     // Progress listener
     window.electronAPI.onSplitProgress((data) => {
@@ -304,11 +320,19 @@ function formatBytes(bytes, decimals = 2) {
 document.addEventListener('dragover', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    dropOverlay.style.display = 'flex';
+});
+
+document.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropOverlay.style.display = 'none';
 });
 
 document.addEventListener('drop', async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    dropOverlay.style.display = 'none';
     
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
@@ -365,3 +389,42 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+function savePreset() {
+    const preset = {
+        sizeValue: sizeValueInput.value,
+        sizeUnit: sizeUnitSelect.value,
+        outputFolder: outputFolderInput.value
+    };
+    localStorage.setItem('mediaSplitterPreset', JSON.stringify(preset));
+    if (window.electron && window.electron.ipcRenderer) {
+        window.electron.ipcRenderer.send('preset-saved', preset);
+    } else if (window.electronAPI && window.electronAPI.sendPresetSaved) {
+        window.electronAPI.sendPresetSaved(preset);
+    } else if (window.ipcRenderer) {
+        window.ipcRenderer.send('preset-saved', preset);
+    } else if (window && window.require) {
+        // Fallback for direct require (not recommended in contextIsolation)
+        try {
+            const { ipcRenderer } = window.require('electron');
+            ipcRenderer.send('preset-saved', preset);
+        } catch (e) {}
+    }
+}
+
+function loadPreset() {
+    const preset = localStorage.getItem('mediaSplitterPreset');
+    if (preset) {
+        try {
+            const { sizeValue, sizeUnit, outputFolder } = JSON.parse(preset);
+            if (sizeValue) sizeValueInput.value = sizeValue;
+            if (sizeUnit) sizeUnitSelect.value = sizeUnit;
+            if (outputFolder) {
+                outputFolderInput.value = outputFolder;
+                outputFolder = outputFolder;
+            }
+        } catch (e) {
+            // Ignore parse errors
+        }
+    }
+}
