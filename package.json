@@ -79,7 +79,6 @@
         }
       ],
       "icon": "assets/icon.ico",
-      "publisherName": "kyuguest",
       "requestedExecutionLevel": "asInvoker",
       "forceCodeSigning": false,
       "signAndEditExecutable": false
