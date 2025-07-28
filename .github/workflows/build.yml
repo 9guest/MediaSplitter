@@ -43,18 +43,19 @@ jobs:
     needs: check-commit
     if: needs.check-commit.outputs.is_release == 'true'
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
 
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -73,10 +74,12 @@ jobs:
             librsvg2-dev \
             patchelf
 
-      - name: Build and Release Electron App
+      - name: Build Electron App
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          ELECTRON_BUILDER_MAINTAINER: "kyuguest <kyugeust@tuta.io>"
+          ELECTRON_BUILDER_MAINTAINER: "kyuguest <kyuguest@tuta.io>"
+          # Disable auto-publish to prevent conflicts
+          ELECTRON_BUILDER_PUBLISH: never
         run: npm run build
 
       - name: Upload Artifacts
@@ -88,6 +91,8 @@ jobs:
             dist/*.dmg
             dist/*.AppImage
             dist/*.deb
+            dist/*.zip
+            dist/*.tar.gz
           if-no-files-found: ignore
 
   create-release:
@@ -103,18 +108,33 @@ jobs:
           path: artifacts
           merge-multiple: true
 
+      - name: List downloaded files
+        run: |
+          echo "Downloaded artifacts:"
+          find artifacts -type f -name "*" | sort
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          token: ${{ secrets.GH_TOKEN }}
           tag_name: ${{ needs.check-commit.outputs.version }}
           name: Release ${{ needs.check-commit.outputs.version }}
           body: |
+            ## 🚀 Media Splitter ${{ needs.check-commit.outputs.version }}
+            
             ${{ needs.check-commit.outputs.description }}
+            
+            ### 📥 Downloads
+            - **Windows**: Download the `.exe` installer or portable version
+            - **macOS**: Download the `.dmg` file
+            - **Linux**: Download the `.AppImage` or `.deb` package
+            
+            ### 🔧 Installation
+            - **Windows**: Run the installer or extract the portable version
+            - **macOS**: Open the DMG and drag to Applications folder
+            - **Linux**: Make AppImage executable or install the DEB package
           files: |
-            artifacts/*.exe
-            artifacts/*.dmg
-            artifacts/*.AppImage
-            artifacts/*.deb
+            artifacts/*
           draft: false
           prerelease: false
-          generate_release_notes: false
+          generate_release_notes: true
